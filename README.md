@@ -1,1 +1,1 @@
-# SeCluMon
+# Server Cluster Monitor
