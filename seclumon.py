@@ -11,26 +11,30 @@ def check_nproc(server_name):
 
 
 def check_running_processes(server_name):
-  cmd = " \' ps -e -o uname,pcpu,etime --sort=-pcpu,-etime | head -n 11 | tail -n 10  \' "
+  #cmd = " \' ps -e -o uname,pcpu,etime --sort=-pcpu,-etime | head -n 11 | tail -n 10  \' "
+  #output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
+  #output1 = output.split('\n')
+  #
+  #cmd = " \' ps -e -o cmd --sort=-pcpu,-etime | head -n 11 | tail -n 10  \' "
+  #output_cmd = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
+  #output1_cmd = output_cmd.split('\n')
+
+  cmd = " \' cat <(grep \"cpu \" /proc/stat) <(sleep 1 && grep \"cpu \" /proc/stat) \' "
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
-  output1 = output.split('\n')
-  
-  cmd = " \' ps -e -o cmd --sort=-pcpu,-etime | head -n 11 | tail -n 10  \' "
-  output_cmd = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
-  output1_cmd = output_cmd.split('\n')
+  cpu_realtime = subprocess.check_output("echo \"" + output + "\"| awk -v RS='' '{print ($13-$2+$15-$4)/100 }'", shell=True)
   
   process_info = []
-  for i in range(0,10):
-    output2 = output1[i].split()
-    # output2 looks like this ['dli', '4345', '1-01:44:42']
+  #for i in range(0,10):
+  #  output2 = output1[i].split()
+  #  # output2 looks like this ['dli', '4345', '1-01:44:42']
 
-    # ignore process using less than 0.8 CPU
-    if (float(output2[1])< 80):
-      break
-    output2[1] = output2[1][:-2]
-    output2.append(output1_cmd[i])
-    process_info.append(output2)
-  return process_info
+  #  # ignore process using less than 0.8 CPU
+  #  if (float(output2[1])< 80 and i>=1):
+  #    break
+  #  output2[1] = output2[1][:-2]
+  #  output2.append(output1_cmd[i])
+  #  process_info.append(output2)
+  return process_info, cpu_realtime.rstrip()
 
 
 
@@ -42,6 +46,7 @@ def check_memory(server_name):
  
 if __name__ == "__main__":
   server_name = "noether.cs.columbia.edu"
-  cmd = " \' ps -e -o uname,pcpu,etime --sort=-pcpu,-etime | head -n 11 | tail -n 10  \' "
+  cmd = " \' cat <(grep \"cpu \" /proc/stat) <(sleep 1 && grep \"cpu \" /proc/stat) \' "
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
-  output1 = output.split('\n')
+  output2 = subprocess.check_output("echo \"" + output + "\"| awk -v RS='' '{print ($13-$2+$15-$4)/100 }'", shell=True)
+
