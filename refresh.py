@@ -10,8 +10,16 @@ if __name__ == "__main__":
   os.chdir("html/db/SeCluMon/")
   import seclumon as scm
 
-  hostnames = ["noether", "stokes", "ampere01"]
   hostnames = ["stokes", "noether", "navier00", "navier01", "navier02", "navier03", "ampere00", "ampere01", "ampere02", "compute01", "compute02", "compute03", "compute04", "compute05", "compute06", "compute07", "compute08"] 
+
+  hostnames.append("beijing")
+  hostnames.append("paris")
+  hostnames.append("santiago")
+  hostnames.append("brussels")
+  hostnames.append("damascus")
+  hostnames.append("tokyo")
+  hostnames.append("hanoi")
+  hostnames.append("kathmandu")
   t0 = time.time()
   #for hostname in hostnames:
   #  scm.process_node(hostname)

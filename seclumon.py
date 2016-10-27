@@ -3,15 +3,21 @@ import time
 
 def process_node(hostname):
   # check if the host is online
-  response = os.system("ping -c 1 " + hostname)
+  response = 0
+  trials = 5
+  while ( trials > 0):
+    response = os.system("ping -c 1 " + hostname)
+    trials = trials - 1
+    if (response == 0):
+      break
   folder_name = 'data/' + hostname
   if response == 0:
-    #print hostname, 'is up!'
+    print hostname, 'is up!'
     if not os.path.exists(folder_name):
-      if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
+      os.makedirs(folder_name)
   else:
-    #print hostname, 'is down!'
+    print hostname, 'is down!'
+    os.remove(folder_name + "/info.txt")
     os.rmdir(folder_name)
     return
   
@@ -93,5 +99,5 @@ def check_memory(server_name):
   return output1[1], output1[2], output1[3]
  
 if __name__ == "__main__":
-  process_node("ampere02")
+  process_node("beijing")
 
