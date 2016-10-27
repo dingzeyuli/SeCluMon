@@ -99,6 +99,7 @@ with open("cron.log") as f:
     lines.append(line)
 print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_cores)
 print "<br><pre>last updated on " + lines[0] + "</pre>"
+print "<script type=\"text/javascript\" src=\"http://www.cs.columbia.edu/cg/lego/copyright.js\"><\/script>"
 print """
 </body>
 </html>
