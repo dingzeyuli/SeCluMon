@@ -8,6 +8,7 @@ def process_node(hostname):
   while ( trials > 0):
     response = os.system("ping -c 1 " + hostname)
     trials = trials - 1
+    print trials
     if (response == 0):
       break
   folder_name = 'data/' + hostname
@@ -68,10 +69,12 @@ def check_running_processes(server_name):
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
   process_info = subprocess.check_output("echo \"" + output + "\"| awk '{ printf(\"%s %-8s %-8s\\n\", $2, $9, $12); }'", shell=True)
 
-  process_info = process_info.split('\n')
+  process_info = process_info.rstrip().split('\n')
   active_processes = []
   for line in process_info:
     tokens = line.split()
+    if (len(tokens) < 2):
+      break
     if (float(tokens[1]) < 50):
       break
 
