@@ -1,23 +1,39 @@
 import os,sys,subprocess 
 import time
 
+def check_group(hostname):
+  if "compute" in hostname:
+    return "department"
+  if "navier" in hostname:
+    return "graphics"
+  if "ampere" in hostname:
+    return "graphics"
+  if "stokes" in hostname:
+    return "graphics"
+  if "noether" in hostname:
+    return "graphics"
+
+  return "clic"
+
 def process_node(hostname):
   # check if the host is online
   response = 0
-  trials = 5
+  trials = 2
   while ( trials > 0):
     response = os.system("ping -c 1 " + hostname)
     trials = trials - 1
     print trials
     if (response == 0):
       break
-  folder_name = 'data/' + hostname
+  folder_name = 'data/' + check_group(hostname) + '/' +  hostname
   if response == 0:
     print hostname, 'is up!'
     if not os.path.exists(folder_name):
       os.makedirs(folder_name)
   else:
     print hostname, 'is down!'
+    if not os.path.exists(folder_name):
+      return
     os.remove(folder_name + "/info.txt")
     os.rmdir(folder_name)
     return
