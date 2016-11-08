@@ -84,7 +84,7 @@ for group in groups:
       rgb = (rgb[0], rgb[1], rgb[2])
       return '#%02x%02x%02x' % rgb
   
-    white = [255,255,255]
+    white = [128,255,128]
     red  = [255, 128, 128]
     ratio = float(cpu_realtime)/float(nproc)
     machinecolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
@@ -114,7 +114,24 @@ with open("cron.log") as f:
 print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_cores)
 print "<br><pre>last updated on " + lines[0] + "</pre>"
 print """
+<!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=11155756; 
+var sc_invisible=1; 
+var sc_security="de515cde"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+    "https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+    scJsHost+
+    "statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="shopify visitor
+statistics" href="http://statcounter.com/shopify/"
+            target="_blank"><img class="statcounter"
+                                 src="//c.statcounter.com/11155756/0/de515cde/1/"
+                                 alt="shopify visitor statistics"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->
+
 </body>
 </html>
 """ 
-
