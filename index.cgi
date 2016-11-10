@@ -19,6 +19,25 @@ print """
 </head>
 
 <body>
+<!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=11155756; 
+var sc_invisible=1; 
+var sc_security="de515cde"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+    "https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+    scJsHost+
+    "statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="shopify visitor
+statistics" href="http://statcounter.com/shopify/"
+            target="_blank"><img class="statcounter"
+                                 src="//c.statcounter.com/11155756/0/de515cde/1/"
+                                 alt="shopify visitor statistics"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->
+
+
 """
 # os.environ["REMOTE_ADDR"]
 # <meta http-equiv="refresh" content="80">
@@ -28,7 +47,7 @@ groups = ["graphics", "department", "clic"]
 print """<table border='0'>
   <tr bgcolor='#66ccee'>
     <td><pre>Machine</pre></td>
-    <td><pre>CPU Cores<br>(Active/Total)</pre></td>
+    <td><pre>CPU Hypercores<br>(Active/Total)</pre></td>
     <td><pre>Memory<br>(Free/Used/Total)</pre></td>
     <td><pre>Response time (s)</pre></td>
     <td><pre>Most Active Processes</pre></td>
@@ -114,24 +133,6 @@ with open("cron.log") as f:
 print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_cores)
 print "<br><pre>last updated on " + lines[0] + "</pre>"
 print """
-<!-- Start of StatCounter Code for Default Guide -->
-<script type="text/javascript">
-var sc_project=11155756; 
-var sc_invisible=1; 
-var sc_security="de515cde"; 
-var scJsHost = (("https:" == document.location.protocol) ?
-    "https://secure." : "http://www.");
-document.write("<sc"+"ript type='text/javascript' src='" +
-    scJsHost+
-    "statcounter.com/counter/counter.js'></"+"script>");
-</script>
-<noscript><div class="statcounter"><a title="shopify visitor
-statistics" href="http://statcounter.com/shopify/"
-            target="_blank"><img class="statcounter"
-                                 src="//c.statcounter.com/11155756/0/de515cde/1/"
-                                 alt="shopify visitor statistics"></a></div></noscript>
-<!-- End of StatCounter Code for Default Guide -->
-
 </body>
 </html>
 """ 
