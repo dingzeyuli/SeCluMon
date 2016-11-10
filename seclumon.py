@@ -12,25 +12,30 @@ def check_group(hostname):
     return "graphics"
   if "noether" in hostname:
     return "graphics"
+  if "green" in hostname:
+    return "graphics"
+  if "perelman" in hostname:
+    return "graphics"
 
   return "clic"
 
 def process_node(hostname):
   # check if the host is online
   response = 0
-  trials = 2
-  while ( trials > 0):
-    response = os.system("ping -c 1 " + hostname)
-    trials = trials - 1
-    print trials
-    if (response == 0):
-      break
+  #trials = 2
+  #while ( trials > 0):
+  response = os.system("ping -c 1 " + hostname)
+  #  trials = trials - 1
+  #  print trials
+  #if (response == 0):
+  #  break
   folder_name = 'data/' + check_group(hostname) + '/' +  hostname
   log_txt_name = 'data/history/' + check_group(hostname) + '/' +  hostname + '.txt'
   if response == 0:
     print hostname, 'is up!'
     if not os.path.exists(folder_name):
       os.makedirs(folder_name)
+    #return
   else:
     with open(log_txt_name, "a") as myfile:
       myfile.write("%s 0 0 \n" % time.strftime("%Y-%m-%d-%H:%M").rstrip())
