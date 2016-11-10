@@ -10,7 +10,7 @@ import multiprocessing as mp
 
 if __name__ == "__main__":
   hostnames=[]
-  hostnames = ["stokes", "noether", "navier00", "navier01", "navier02", "navier03", "ampere00", "ampere01", "ampere02", "compute01", "compute02", "compute03", "compute04","compute05", "compute06", "compute07", "compute08"] 
+  hostnames = ["stokes", "noether", "navier00", "navier01", "navier02", "navier03", "ampere00", "ampere01", "ampere02", "compute01", "compute02", "compute03", "compute04","compute05", "compute06", "compute07", "compute08", "green", "perelman"] 
 
   hostnames.append("beijing")
   hostnames.append("paris")
@@ -21,7 +21,7 @@ if __name__ == "__main__":
   hostnames.append("hanoi")
   hostnames.append("kathmandu")
   hostnames.append("moscow")
-  ## broken hostnames.append("rabat")
+  # broken hostnames.append("rabat")
   hostnames.append("wellington")
   hostnames.append("nassau")
   hostnames.append("yerevan")
@@ -42,9 +42,11 @@ if __name__ == "__main__":
   #for hostname in hostnames:
   #  print hostname
   #  scm.process_node( hostname)
-  pool = mp.Pool()
+  pool = mp.Pool(20)
   pool.map(scm.process_node, hostnames)
   t3 = time.time()
+  print t3-t2
+  pool.terminate()
 
   text_file = open("./cron.log", "w")
   text_file.write("%s\n" % time.strftime("%Y-%m-%d %H:%M"))
