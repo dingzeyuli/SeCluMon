@@ -37,8 +37,8 @@ def process_node(hostname):
       os.makedirs(folder_name)
     #return
   else:
-    with open(log_txt_name, "a") as myfile:
-      myfile.write("%s 0 0 \n" % time.strftime("%Y-%m-%d-%H:%M").rstrip())
+    #with open(log_txt_name, "a") as myfile:
+    #  myfile.write("%s 0 0 \n" % time.strftime("%Y-%m-%d-%H:%M").rstrip())
     print hostname, 'is down!'
     if not os.path.exists(folder_name):
       return
@@ -51,8 +51,8 @@ def process_node(hostname):
   total_ram, used_ram, free_ram = check_memory(hostname)
   active_processes, cpu_realtime = check_running_processes(hostname)
 
-  with open(log_txt_name, "a") as myfile:
-    myfile.write("%s %s %s \n" % (time.strftime("%Y-%m-%d-%H:%M").rstrip(), cpu_realtime, nproc ) )
+  #with open(log_txt_name, "a") as myfile:
+  #  myfile.write("%s %s %s \n" % (time.strftime("%Y-%m-%d-%H:%M").rstrip(), cpu_realtime, nproc ) )
 
   # write them to the folder
   text_file = open(folder_name + "/info.txt", "w")

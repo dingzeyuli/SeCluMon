@@ -131,8 +131,12 @@ with open("cron.log") as f:
   for line in f:
     lines.append(line)
 print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_cores)
-print "<br><pre>last updated on " + lines[0] + "</pre>"
+print "<br><pre>last updated on " + lines[0] + "(Eastern Time) </pre>"
 print """
+<br><br>
+<pre>
+Code is on <a href="https://github.com/dingzeyuli/SeCluMon">github</a>. Group members, feel free to modify/improve it.
+</pre>
 </body>
 </html>
 """ 
