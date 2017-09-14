@@ -92,10 +92,20 @@ for group in groups:
     #print total_ram, used_ram, free_ram
     response_time = lines[3].rstrip()
     top_cmds_string = lines[4].rstrip()
-  
+
+    cmds = ""
+    a = int(top_cmds_string)
+    for i in range(a):
+      line = lines[5+i].rstrip()
+      entries = line.split()
+      if float(entries[1]) < 110:
+          break
+      cmds = cmds +  "%s %i-cores %s<br>" % (entries[0], int(int(entries[1])/100), entries[2])
+
+
     #print response_time
     #print top_cmds_string
-  
+
     total_cores += int(nproc)
     total_active_cores += float(cpu_realtime)
   
@@ -122,7 +132,8 @@ for group in groups:
            machinecolor, cpu_realtime, nproc,
            free_ram, used_ram, total_ram,
            response_time,
-           top_cmds_string)
+           cmds
+           )
 
 print "</table>"
 

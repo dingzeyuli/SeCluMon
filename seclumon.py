@@ -49,7 +49,8 @@ def process_node(hostname):
   # gather cpu, memory, and related info
   nproc, response_time = check_nproc(hostname)
   total_ram, used_ram, free_ram = check_memory(hostname)
-  active_processes, cpu_realtime = check_running_processes(hostname)
+  cpu_realtime = check_running_processes(hostname)
+  active_processes = check_busy_user(hostname)
 
   #with open(log_txt_name, "a") as myfile:
   #  myfile.write("%s %s %s \n" % (time.strftime("%Y-%m-%d-%H:%M").rstrip(), cpu_realtime, nproc ) )
@@ -65,7 +66,10 @@ def process_node(hostname):
   else:
     text_file.write("%i \n" % (len(active_processes)))
     for line in active_processes:
-      text_file.write("%s \n" % (line))
+      for entry in line:
+        text_file.write("%s " % entry)
+      text_file.write("\n")
+
 
   text_file.close()
   return
@@ -92,21 +96,21 @@ def check_running_processes(server_name):
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
   cpu_realtime = subprocess.check_output("echo \"" + output + "\"| awk -v RS='' '{print ($13-$2+$15-$4)/100 }'", shell=True)
   
-  cmd = " \' top -b -n 1  | grep \"^[0-9]\" | head -n 10 \' "
-  output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
-  process_info = subprocess.check_output("echo \"" + output + "\"| awk '{ printf(\"%s %-8s %-8s\\n\", $2, $9, $12); }'", shell=True)
+  # cmd = " \' top -b -n 1  | grep \"^[0-9]\" | head -n 10 \' "
+  # output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
+  # process_info = subprocess.check_output("echo \"" + output + "\"| awk '{ printf(\"%s %-8s %-8s\\n\", $2, $9, $12); }'", shell=True)
 
-  process_info = process_info.rstrip().split('\n')
-  active_processes = []
-  for line in process_info:
-    tokens = line.split()
-    if (len(tokens) < 2):
-      break
-    if (float(tokens[1]) < 50):
-      break
+  #process_info = process_info.rstrip().split('\n')
+  #active_processes = []
+  #for line in process_info:
+  #  tokens = line.split()
+  #  if (len(tokens) < 2):
+  #    break
+  #  if (float(tokens[1]) < 50):
+  #    break
 
-    for i in tokens:
-      active_processes.append(line)
+  #  for i in tokens:
+  #    active_processes.append(line)
 
 
 
@@ -120,14 +124,36 @@ def check_running_processes(server_name):
   #  output2[1] = output2[1][:-2]
   #  output2.append(output1_cmd[i])
   #  process_info.append(output2)
-  return active_processes, cpu_realtime.rstrip()
+  return cpu_realtime.rstrip()
 
 def check_memory(server_name):
   cmd = " \'free -g | head -n2 | tail -n1  \' "
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
   output1 = output.split() 
   return output1[1], output1[2], output1[3]
+
+def check_busy_user(server_name):
+  cmd = " \'ps aux | sort -nrk 3,3 | head -n 5 \' "
+  output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
+  output1 = output.split('\n') 
+
+  index = 0
+  w, h = 3, 5;
+  output = [[' ' for x in range(w)] for y in range(h)] 
+
+  for line in output1:
+    entries = line.split()
+    if len(entries) < 4:
+      continue
+    output[index][0] = entries[0]
+    output[index][1] = entries[2]
+    output[index][2] = entries[10]
+    index += 1
+
+  return output
  
 if __name__ == "__main__":
-  process_node("beijing")
+  #process_node("beijing")
+  hostname = "stokes"
+  output = check_busy_user(hostname)
 
