@@ -116,6 +116,10 @@ for group in groups:
     white = [128,255,128]
     red  = [255, 128, 128]
     ratio = float(cpu_realtime)/float(nproc)
+    if ratio<0:
+      ratio = 0
+    elif ratio > 1:
+      ratio = 1
     machinecolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
     machinecolor = rgb_to_hex(machinecolor)
   
