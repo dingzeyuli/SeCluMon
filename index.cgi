@@ -98,20 +98,6 @@ for group in groups:
     max_temp = temperature[1]
     top_cmds_string = lines[5].rstrip()
 
-    cmds = ""
-    a = int(top_cmds_string)
-    better_cpu = 0
-    for i in range(a):
-      line = lines[6+i].rstrip()
-      entries = line.split()
-      if float(entries[1]) < 110:
-          break
-      cmds = cmds +  "%s %i-cores %s<br>" % (entries[0], int(int(entries[1])/100), entries[2])
-      better_cpu = better_cpu + int(entries[1])/100.0
-    if (better_cpu > float(cpu_realtime)):
-        cpu_realtime = better_cpu
-
-
     #print response_time
     #print top_cmds_string
 
@@ -131,14 +117,29 @@ for group in groups:
       ratio = 1
     machinecolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
     machinecolor = rgb_to_hex(machinecolor)
-  
+ 
+    cmds = ""
+    a = int(top_cmds_string)
+    better_cpu = 0
+    for i in range(a):
+      line = lines[6+i].rstrip()
+      entries = line.split()
+      if float(entries[1]) < 110:
+          break
+      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(int(entries[1])/100), machinecolor, entries[2])
+      better_cpu = better_cpu + int(entries[1])/100.0
+    if (better_cpu > float(cpu_realtime)):
+        cpu_realtime = better_cpu
+
+
+ 
     print """
     <tr bgcolor='%s'>
        <td><pre>%s</pre></td>
        <td bgcolor='%s'><pre>%s/%s</pre></td>
        <td><pre>%s/%s/%s</pre></td>
        <td><pre>%s</pre></td>
-       <td><pre>%.1f / %.1f °C<br>%.1f / %.1f °F</pre></td>
+       <td><pre>%.1f / %.1f &deg;C<br>%.1f / %.1f &deg;F</pre></td>
        <td><pre>%s</pre></td>
     </tr>
     """ % (machinecolor, 
