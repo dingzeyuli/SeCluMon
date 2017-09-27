@@ -16,6 +16,7 @@ print """
 
 <head>
   <title>Server Cluster Monitor (SeCluMon)</title>
+  <meta http-equiv="refresh" content="120">
 </head>
 
 <body>
@@ -50,6 +51,7 @@ print """<table border='0'>
     <td><pre>CPU Hypercores<br>(Active/Total)</pre></td>
     <td><pre>Memory<br>(Free/Used/Total)</pre></td>
     <td><pre>Response time (s)</pre></td>
+    <td><pre>Temperature<br>current / maximum</pre></td>
     <td><pre>Most Active Processes</pre></td>
   </tr>
 """
@@ -91,16 +93,23 @@ for group in groups:
     free_ram = token[2]
     #print total_ram, used_ram, free_ram
     response_time = lines[3].rstrip()
-    top_cmds_string = lines[4].rstrip()
+    temperature = lines[4].split()
+    curr_temp = temperature[0]
+    max_temp = temperature[1]
+    top_cmds_string = lines[5].rstrip()
 
     cmds = ""
     a = int(top_cmds_string)
+    better_cpu = 0
     for i in range(a):
-      line = lines[5+i].rstrip()
+      line = lines[6+i].rstrip()
       entries = line.split()
       if float(entries[1]) < 110:
           break
       cmds = cmds +  "%s %i-cores %s<br>" % (entries[0], int(int(entries[1])/100), entries[2])
+      better_cpu = better_cpu + int(entries[1])/100.0
+    if (better_cpu > float(cpu_realtime)):
+        cpu_realtime = better_cpu
 
 
     #print response_time
@@ -129,6 +138,7 @@ for group in groups:
        <td bgcolor='%s'><pre>%s/%s</pre></td>
        <td><pre>%s/%s/%s</pre></td>
        <td><pre>%s</pre></td>
+       <td><pre>%.1f / %.1f °C<br>%.1f / %.1f °F</pre></td>
        <td><pre>%s</pre></td>
     </tr>
     """ % (machinecolor, 
@@ -136,6 +146,7 @@ for group in groups:
            machinecolor, cpu_realtime, nproc,
            free_ram, used_ram, total_ram,
            response_time,
+           float(curr_temp), float(max_temp), float(curr_temp)*1.8+32, float(max_temp)*1.8+32,
            cmds
            )
 
@@ -149,6 +160,7 @@ print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_c
 print "<br><pre>last updated on " + lines[0] + "(Eastern Time) </pre>"
 print """
 <br><br>
+
 <pre>
 Code is on <a href="https://github.com/dingzeyuli/SeCluMon">github</a>. Group members, feel free to modify/improve it.
 </pre>
