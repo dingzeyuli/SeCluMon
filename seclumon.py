@@ -167,9 +167,30 @@ def check_temperature(server_name):
 
  
 if __name__ == "__main__":
-  #process_node("beijing")
-  hostname = "stokes"
-  #output = check_busy_user(hostname)
-  output, o2 = check_temperature(hostname)
-  print output, o2
+  # #process_node("beijing")
+  # hostname = "stokes"
+  # #output = check_busy_user(hostname)
+  # output, o2 = check_temperature(hostname)
+  # print output, o2
+  import requests
+  import json
+  url = "https://api.github.com/repos/dingzeyuli/SeCluMon/commits"
+  myResponse = requests.get(url)
+  
+  if(myResponse.ok):
+    print myResponse.encoding
+    #myResponse.encoding = 'ISO-8859-1'
+    jData = json.loads(myResponse.content)
+    print("The response contains {0} properties".format(len(jData)))
+    print("\n")
+    for key in jData:
+      #for item in key:
+        # print item
+      commit_info = key.get(u'commit')
+      print commit_info.get(u'message')
+      print commit_info.get(u'committer').get(u'date')
+  else:
+    # If response code is not ok (200), print the resulting http error code with description
+    myResponse.raise_for_status()
+
 
