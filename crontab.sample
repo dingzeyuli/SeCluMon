@@ -1,4 +1,5 @@
-*/2 * * * * /home/dli/html/db/SeCluMon/refresh.py > /dev/null
+*/5 * * * * /home/dli/html/db/SeCluMon/refresh.py > /dev/null
+*/3 1 * * * killall python > /dev/null 2> /dev/null
 
 # * * * * * command to be executed
 # # - - - - -
