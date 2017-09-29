@@ -21,14 +21,15 @@ def check_group(hostname):
 
 def process_node(hostname):
   # check if the host is online
-  response = 0
-  #trials = 2
-  #while ( trials > 0):
+  # this old script only checks if a host is online
   response = os.system("ping -c 1 " + hostname)
-  #  trials = trials - 1
-  #  print trials
-  #if (response == 0):
-  #  break
+  if (response == 0):
+    # this new script checks if SSH port 22 is responding, much more robust than ping
+    # it's slower than ping when the host is actually down
+    # so I am only checking it when the host is up 
+    # This will confirm is port 22 is responding.
+    response = os.system(" nc -zv " + hostname + " 22")
+
   folder_name = 'data/' + check_group(hostname) + '/' +  hostname
   log_txt_name = 'data/history/' + check_group(hostname) + '/' +  hostname + '.txt'
   if response == 0:
@@ -166,12 +167,7 @@ def check_temperature(server_name):
   return output1[0], output2[0]
 
  
-if __name__ == "__main__":
-  # #process_node("beijing")
-  # hostname = "stokes"
-  # #output = check_busy_user(hostname)
-  # output, o2 = check_temperature(hostname)
-  # print output, o2
+def test_github_api():
   import requests
   import json
   url = "https://api.github.com/repos/dingzeyuli/SeCluMon/commits"
@@ -194,3 +190,14 @@ if __name__ == "__main__":
     myResponse.raise_for_status()
 
 
+if __name__ == "__main__":
+  #process_node("beijing")
+  hostname = "stokes"
+  #output = check_busy_user(hostname)
+  # output, o2 = check_temperature(hostname)
+  # print output, o2
+  response = os.system(" nc -zv " + hostname + " 22")
+  print "response: ", response
+  hostname = "ampere00"
+  response = os.system(" nc -zv " + hostname + " 22")
+  print "response: ", response
