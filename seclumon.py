@@ -183,8 +183,16 @@ def test_github_api():
       #for item in key:
         # print item
       commit_info = key.get(u'commit')
-      print commit_info.get(u'message')
+      commit_msg = commit_info.get(u'message')
+      if "README" in commit_msg or "eadme" in commit_msg:
+        continue
+      if "Merge" in commit_msg and "branch" in commit_msg:
+        continue
+      if len(commit_msg) < 4:
+        continue
       print commit_info.get(u'committer').get(u'date')
+      print commit_info.get(u'message')
+      print commit_info.get(u'committer').get(u'name')
   else:
     # If response code is not ok (200), print the resulting http error code with description
     myResponse.raise_for_status()
@@ -196,8 +204,11 @@ if __name__ == "__main__":
   #output = check_busy_user(hostname)
   # output, o2 = check_temperature(hostname)
   # print output, o2
-  response = os.system(" nc -zv " + hostname + " 22")
-  print "response: ", response
-  hostname = "ampere00"
-  response = os.system(" nc -zv " + hostname + " 22")
-  print "response: ", response
+
+  #response = os.system(" nc -zv " + hostname + " 22")
+  #print "response: ", response
+  #hostname = "ampere00"
+  #response = os.system(" nc -zv " + hostname + " 22")
+  #print "response: ", response
+
+  test_github_api()

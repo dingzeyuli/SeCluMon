@@ -186,10 +186,52 @@ with open("cron.log") as f:
 print "<pre>summary - CPU cores: %.2f / %i</pre>" % (total_active_cores, total_cores)
 print "<br><pre>last updated on " + lines[0] + "(Eastern Time) </pre>"
 print """
-<br><br>
+<br>
 
 <pre>
-Code is on <a href="https://github.com/dingzeyuli/SeCluMon">github</a>. Group members, feel free to modify/improve it.
+Code is on <a href="https://github.com/dingzeyuli/SeCluMon">github</a>. Group members, feel free to modify/improve it and send in pull requests.
+<br><br>
+"""
+
+
+print "<h3>changelog:</h3>"
+import requests
+import json
+url = "https://api.github.com/repos/dingzeyuli/SeCluMon/commits"
+myResponse = requests.get(url)
+
+if(myResponse.ok):
+  #print myResponse.encoding
+  #myResponse.encoding = 'ISO-8859-1'
+  jData = json.loads(myResponse.content)
+  #  print("The response contains {0} properties".format(len(jData)))
+  #  print("\n")
+  for key in jData:
+    #for item in key:
+      # print item
+    commit_info = key.get(u'commit')
+    commit_msg = commit_info.get(u'message')
+    if "README" in commit_msg or "eadme" in commit_msg:
+      continue
+    if "Merge" in commit_msg and "branch" in commit_msg:
+      continue
+    if len(commit_msg) < 4:
+      continue
+    c_date = commit_info.get(u'committer').get(u'date')
+    c_date = c_date[0:10]
+    #c_date = c_date.replace('T', ' ' )
+    #c_date = c_date.replace('Z', ' ' )
+    #commit_url = commit_info.get(u'tree').get(u'url')
+    #print commit_url
+
+    print "%s %s -%s"%(c_date, commit_msg, commit_info.get(u'committer').get(u'name'))
+else:
+  # If response code is not ok (200), print the resulting http error code with description
+  myResponse.raise_for_status()
+
+
+print
+"""
 </pre>
 </body>
 </html>
