@@ -7,6 +7,36 @@ import os
 import time
 #cgitb.enable()  # for troubleshooting
 from glob import glob
+import random
+
+def rgb_to_hex(rgb):
+  rgb = (rgb[0], rgb[1], rgb[2])
+  return '#%02x%02x%02x' % rgb
+def sine_mapping(input_x):
+  if input_x <= 0.5:
+    output_y = input_x*input_x*input_x*input_x/0.125
+  elif input_x > 0.5:
+    input_x = 1 - input_x
+    output_y = ( -input_x*input_x*input_x*input_x+0.125)/0.125
+  return output_y
+
+def value_to_color(value, min_value, max_value):
+  value = float(value)
+  min_value = float(min_value)
+  max_value = float(max_value)
+  white = [128, 255, 128]
+  red   = [255, 128, 128]
+  ratio = float(value-min_value)/float(max_value - min_value)
+
+  if ratio<0:
+    ratio = 0
+  elif ratio > 1:
+    ratio = 1
+  mcolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
+  machinecolor1 = rgb_to_hex(mcolor)
+  return machinecolor1
+
+
 
 print "Content-type: text/html"
 print
@@ -44,6 +74,7 @@ statistics" href="http://statcounter.com/shopify/"
 # <meta http-equiv="refresh" content="80">
 
 groups = ["graphics", "department", "clic"]
+background_colors=["#222222", "#111111", "#222222"]
 
 print """<table border='0'>
   <tr bgcolor='#66ccee'>
@@ -59,6 +90,8 @@ print """<table border='0'>
 total_cores = 0
 total_active_cores = 0
 
+random.seed()
+
 for group in groups:
   print """
   <tr>
@@ -68,6 +101,8 @@ for group in groups:
   <td><pre><emph>%s:</emph></pre></td>
   </tr>
   """ % (group)
+
+  bg_color = "#%i%i%i%i%i%i" % (random.randint(1,2),random.randint(1,2),random.randint(1,2),random.randint(1,2),random.randint(1,2),random.randint(1,2))
 
   folders = sorted(glob("data/" + group + "/*/"))
   
@@ -104,20 +139,11 @@ for group in groups:
     total_cores += int(nproc)
     total_active_cores += float(cpu_realtime)
   
-    def rgb_to_hex(rgb):
-      rgb = (rgb[0], rgb[1], rgb[2])
-      return '#%02x%02x%02x' % rgb
+    cpu_color = value_to_color(cpu_realtime, 0,  nproc)
+    ram_color = value_to_color(used_ram, 0,  total_ram)
+    temp_color = value_to_color(curr_temp, 30,  max_temp)
   
-    white = [128,255,128]
-    red  = [255, 128, 128]
-    ratio = float(cpu_realtime)/float(nproc)
-    if ratio<0:
-      ratio = 0
-    elif ratio > 1:
-      ratio = 1
-    machinecolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
-    machinecolor = rgb_to_hex(machinecolor)
- 
+    bg_color = "#EFEFEF"
     cmds = ""
     a = int(top_cmds_string)
     better_cpu = 0
@@ -126,7 +152,7 @@ for group in groups:
       entries = line.split()
       if float(entries[1]) < 110:
           break
-      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(int(entries[1])/100), machinecolor, entries[2])
+      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(int(entries[1])/100),bg_color, entries[2])
       better_cpu = better_cpu + int(entries[1])/100.0
     if (better_cpu > float(cpu_realtime)):
         cpu_realtime = better_cpu
@@ -137,17 +163,17 @@ for group in groups:
     <tr bgcolor='%s'>
        <td><pre>%s</pre></td>
        <td bgcolor='%s'><pre>%s/%s</pre></td>
-       <td><pre>%s/%s/%s</pre></td>
+       <td bgcolor='%s'><pre>%s/%s/%s</pre></td>
        <td><pre>%s</pre></td>
-       <td><pre>%.1f / %.1f &deg;C<br>%.1f / %.1f &deg;F</pre></td>
+       <td bgcolor='%s'><pre>%.1f / %.1f &deg;C<br>%.1f / %.1f &deg;F</pre></td>
        <td><pre>%s</pre></td>
     </tr>
-    """ % (machinecolor, 
+    """ % (bg_color, 
            hostname, 
-           machinecolor, cpu_realtime, nproc,
-           free_ram, used_ram, total_ram,
+           cpu_color, cpu_realtime, nproc,
+           ram_color, free_ram, used_ram, total_ram,
            response_time,
-           float(curr_temp), float(max_temp), float(curr_temp)*1.8+32, float(max_temp)*1.8+32,
+           temp_color, float(curr_temp), float(max_temp), float(curr_temp)*1.8+32, float(max_temp)*1.8+32,
            cmds
            )
 
