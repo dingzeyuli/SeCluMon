@@ -53,6 +53,7 @@ def process_node(hostname):
   cpu_realtime = check_running_processes(hostname)
   active_processes = check_busy_user(hostname)
   curr_temp, max_temp = check_temperature(hostname)
+  disk = check_disk(hostname)
 
   #with open(log_txt_name, "a") as myfile:
   #  myfile.write("%s %s %s \n" % (time.strftime("%Y-%m-%d-%H:%M").rstrip(), cpu_realtime, nproc ) )
@@ -64,6 +65,7 @@ def process_node(hostname):
   text_file.write("%s %s %s\n" % (total_ram, used_ram, free_ram))
   text_file.write("%s \n" % (response_time))
   text_file.write("%s %s\n" % (curr_temp, max_temp))
+  text_file.write("%s\n" % (disk))
   if not active_processes:
     text_file.write("0\n" )
   else:
@@ -155,6 +157,13 @@ def check_busy_user(server_name):
 
   return output
 
+def check_disk(server_name):
+  cmd = " df | grep local | awk \'{print $5}\' "
+  output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
+  output1 = output.split('\n') 
+  
+  return output1[0]
+
 def check_temperature(server_name):
   cmd = " cat /sys/devices/platform/coretemp.\?/hwmon\*/hwmon\*/temp\*_input | awk \'{ total += $1 } END { print total/NR/1000 }\' "
   output = subprocess.check_output("ssh " + server_name +  cmd, shell=True)
@@ -166,7 +175,7 @@ def check_temperature(server_name):
 
   return output1[0], output2[0]
 
- 
+
 def test_github_api():
   import requests
   import json
@@ -204,6 +213,8 @@ if __name__ == "__main__":
   #output = check_busy_user(hostname)
   # output, o2 = check_temperature(hostname)
   # print output, o2
+  output = check_disk(hostname)
+  print output
 
   #response = os.system(" nc -zv " + hostname + " 22")
   #print "response: ", response
@@ -211,4 +222,4 @@ if __name__ == "__main__":
   #response = os.system(" nc -zv " + hostname + " 22")
   #print "response: ", response
 
-  test_github_api()
+  #test_github_api()

@@ -32,9 +32,11 @@ def value_to_color(value, min_value, max_value):
     ratio = 0
   elif ratio > 1:
     ratio = 1
+
+  ratio = sine_mapping(ratio)
   mcolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
   machinecolor1 = rgb_to_hex(mcolor)
-  return machinecolor1
+  return machinecolor1, ratio
 
 
 
@@ -50,25 +52,24 @@ print """
 </head>
 
 <body>
+
 <!-- Start of StatCounter Code for Default Guide -->
 <script type="text/javascript">
-var sc_project=11155756; 
-var sc_invisible=1; 
-var sc_security="de515cde"; 
+var sc_project=11459683; 
+var sc_invisible=0; 
+var sc_security="7a468f14"; 
 var scJsHost = (("https:" == document.location.protocol) ?
-    "https://secure." : "http://www.");
+"https://secure." : "http://www.");
 document.write("<sc"+"ript type='text/javascript' src='" +
-    scJsHost+
-    "statcounter.com/counter/counter.js'></"+"script>");
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
 </script>
-<noscript><div class="statcounter"><a title="shopify visitor
-statistics" href="http://statcounter.com/shopify/"
-            target="_blank"><img class="statcounter"
-                                 src="//c.statcounter.com/11155756/0/de515cde/1/"
-                                 alt="shopify visitor statistics"></a></div></noscript>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - StatCounter" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11459683/0/7a468f14/0/" alt="Web
+Analytics Made Easy - StatCounter"></a></div></noscript>
 <!-- End of StatCounter Code for Default Guide -->
-
-
 """
 # os.environ["REMOTE_ADDR"]
 # <meta http-equiv="refresh" content="80">
@@ -80,9 +81,10 @@ print """<table border='0'>
   <tr bgcolor='#66ccee'>
     <td><pre>Machine</pre></td>
     <td><pre>CPU Hypercores<br>(Active/Total)</pre></td>
-    <td><pre>Memory<br>(Free/Used/Total)</pre></td>
+    <td><pre>Memory<br>(Used/Total)</pre></td>
     <td><pre>Response time (s)</pre></td>
-    <td><pre>Temperature<br>current / maximum</pre></td>
+    <td><pre>Disk </pre></td>
+    <td><pre>Temperature<br>current/maximum</pre></td>
     <td><pre>Most Active Processes</pre></td>
   </tr>
 """
@@ -131,24 +133,40 @@ for group in groups:
     temperature = lines[4].split()
     curr_temp = temperature[0]
     max_temp = temperature[1]
-    top_cmds_string = lines[5].rstrip()
+    disk = lines[5].split()
+    top_cmds_string = lines[6].rstrip()
 
     #print response_time
     #print top_cmds_string
+    bg_color = "#EFEFEF"
 
     total_cores += int(nproc)
     total_active_cores += float(cpu_realtime)
   
-    cpu_color = value_to_color(cpu_realtime, 0,  nproc)
-    ram_color = value_to_color(used_ram, 0,  total_ram)
-    temp_color = value_to_color(curr_temp, 30,  max_temp)
+    cpu_color, cpu_ratio = value_to_color(cpu_realtime, 0,  nproc)
+    ram_color, ram_ratio = value_to_color(used_ram, 0,  total_ram)
+    temp_color,temp_ratio= value_to_color(curr_temp, 30,  max_temp)
+   
+    def p2f(x):
+      return float(x.strip('%'))/100
+    if not disk:
+      disk = "N/A"
+      disk_color = bg_color
+      disk_ratio = 0
+    else:
+      disk = disk[0]
+      disk_color, disk_ratio = value_to_color(0, p2f(disk),  1)
+    
+    all_ratios = [cpu_ratio, ram_ratio, temp_ratio, disk_ratio]
+    max_index =  all_ratios.index(max(all_ratios))
+    all_colors = [cpu_color, ram_color, temp_color, disk_color]
+    max_color = all_colors[max_index]
   
-    bg_color = "#EFEFEF"
     cmds = ""
     a = int(top_cmds_string)
     better_cpu = 0
     for i in range(a):
-      line = lines[6+i].rstrip()
+      line = lines[7+i].rstrip()
       entries = line.split()
       if float(entries[1]) < 110:
           break
@@ -161,18 +179,20 @@ for group in groups:
  
     print """
     <tr bgcolor='%s'>
-       <td><pre>%s</pre></td>
+       <td bgcolor='%s'><pre>%s</pre></td>
        <td bgcolor='%s'><pre>%s/%s</pre></td>
-       <td bgcolor='%s'><pre>%s/%s/%s</pre></td>
+       <td bgcolor='%s'><pre>%s/%s</pre></td>
        <td><pre>%s</pre></td>
+       <td bgcolor='%s'><pre>%s</pre></td>
        <td bgcolor='%s'><pre>%.1f / %.1f &deg;C<br>%.1f / %.1f &deg;F</pre></td>
        <td><pre>%s</pre></td>
     </tr>
     """ % (bg_color, 
-           hostname, 
+           max_color, hostname, 
            cpu_color, cpu_realtime, nproc,
-           ram_color, free_ram, used_ram, total_ram,
+           ram_color, used_ram, total_ram,
            response_time,
+           disk_color, disk,
            temp_color, float(curr_temp), float(max_temp), float(curr_temp)*1.8+32, float(max_temp)*1.8+32,
            cmds
            )
