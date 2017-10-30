@@ -34,9 +34,6 @@ def process_node(hostname):
   log_txt_name = 'data/history/' + check_group(hostname) + '/' +  hostname + '.txt'
   if response == 0:
     print hostname, 'is up!'
-    if not os.path.exists(folder_name):
-      os.makedirs(folder_name)
-    #return
   else:
     #with open(log_txt_name, "a") as myfile:
     #  myfile.write("%s 0 0 \n" % time.strftime("%Y-%m-%d-%H:%M").rstrip())
@@ -53,8 +50,13 @@ def process_node(hostname):
   cpu_realtime = check_running_processes(hostname)
   active_processes = check_busy_user(hostname)
   curr_temp, max_temp = check_temperature(hostname)
-  disk = check_disk(hostname)
+  if (check_group(hostname) == "clic"):
+    disk = ""
+  else:
+    disk = check_disk(hostname)
 
+  if not os.path.exists(folder_name):
+    os.makedirs(folder_name)
   #with open(log_txt_name, "a") as myfile:
   #  myfile.write("%s %s %s \n" % (time.strftime("%Y-%m-%d-%H:%M").rstrip(), cpu_realtime, nproc ) )
 

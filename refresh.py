@@ -36,12 +36,15 @@ if __name__ == "__main__":
   hostnames.append("jerusalem")
   hostnames.append("cairo")
   hostnames.append("havana")
-  #hostnames.append("islamabad")
   hostnames.append("nairobi")
   hostnames.append("lima")
   hostnames.append("copenhagen")
   hostnames.append("helsinki")
-  hostnames.append("brasilia")
+  
+  #hostnames.append("islamabad")
+  # no home directory
+  ##hostnames.append("brasilia")
+  
   hostnames.append("canberra")
   hostnames.append("tehran")
   hostnames.append("sofia")

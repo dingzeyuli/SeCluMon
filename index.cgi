@@ -33,7 +33,7 @@ def value_to_color(value, min_value, max_value):
   elif ratio > 1:
     ratio = 1
 
-  ratio = sine_mapping(ratio)
+  #ratio = sine_mapping(ratio)
   mcolor = [ratio * r + (1-ratio) * w for r,w in zip(red,white) ]
   machinecolor1 = rgb_to_hex(mcolor)
   return machinecolor1, ratio
@@ -49,6 +49,23 @@ print """
 <head>
   <title>Server Cluster Monitor (SeCluMon)</title>
   <meta http-equiv="refresh" content="120">
+  <link rel="apple-touch-icon" sizes="57x57" href="./assets/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./assets/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./assets/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./assets/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./assets/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./assets/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./assets/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="./assets/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./assets/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+  <link rel="manifest" href="./assets/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="./assets/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -56,7 +73,7 @@ print """
 <!-- Start of StatCounter Code for Default Guide -->
 <script type="text/javascript">
 var sc_project=11459683; 
-var sc_invisible=0; 
+var sc_invisible=1; 
 var sc_security="7a468f14"; 
 var scJsHost = (("https:" == document.location.protocol) ?
 "https://secure." : "http://www.");
@@ -81,7 +98,7 @@ print """<table border='0'>
   <tr bgcolor='#66ccee'>
     <td><pre>Machine</pre></td>
     <td><pre>CPU Hypercores<br>(Active/Total)</pre></td>
-    <td><pre>Memory<br>(Used/Total)</pre></td>
+    <td><pre>Memory (GB)<br>(Used/Total)</pre></td>
     <td><pre>Response time (s)</pre></td>
     <td><pre>Disk </pre></td>
     <td><pre>Temperature<br>current/maximum</pre></td>
@@ -143,25 +160,7 @@ for group in groups:
     total_cores += int(nproc)
     total_active_cores += float(cpu_realtime)
   
-    cpu_color, cpu_ratio = value_to_color(cpu_realtime, 0,  nproc)
-    ram_color, ram_ratio = value_to_color(used_ram, 0,  total_ram)
-    temp_color,temp_ratio= value_to_color(curr_temp, 30,  max_temp)
-   
-    def p2f(x):
-      return float(x.strip('%'))/100
-    if not disk:
-      disk = "N/A"
-      disk_color = bg_color
-      disk_ratio = 0
-    else:
-      disk = disk[0]
-      disk_color, disk_ratio = value_to_color(0, p2f(disk),  1)
-    
-    all_ratios = [cpu_ratio, ram_ratio, temp_ratio, disk_ratio]
-    max_index =  all_ratios.index(max(all_ratios))
-    all_colors = [cpu_color, ram_color, temp_color, disk_color]
-    max_color = all_colors[max_index]
-  
+ 
     cmds = ""
     a = int(top_cmds_string)
     better_cpu = 0
@@ -175,7 +174,25 @@ for group in groups:
     if (better_cpu > float(cpu_realtime)):
         cpu_realtime = better_cpu
 
-
+    cpu_color, cpu_ratio = value_to_color(cpu_realtime, 0,  nproc)
+    ram_color, ram_ratio = value_to_color(used_ram, 0,  total_ram)
+    temp_color,temp_ratio= value_to_color(curr_temp, 30,  max_temp)
+   
+    def p2f(x):
+      return float(x.strip('%'))/100
+    if not disk:
+      disk = "N/A"
+      disk_color = bg_color
+      disk_ratio = 0
+    else:
+      disk = disk[0]
+      disk_color, disk_ratio = value_to_color(p2f(disk), 0, 1)
+    
+    all_ratios = [cpu_ratio, ram_ratio, temp_ratio, disk_ratio]
+    max_index =  all_ratios.index(max(all_ratios))
+    all_colors = [cpu_color, ram_color, temp_color, disk_color]
+    max_color = all_colors[max_index]
+ 
  
     print """
     <tr bgcolor='%s'>
