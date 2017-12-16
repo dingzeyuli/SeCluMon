@@ -50,7 +50,7 @@ def process_node(hostname):
   cpu_realtime = check_running_processes(hostname)
   active_processes = check_busy_user(hostname)
   curr_temp, max_temp = check_temperature(hostname)
-  if (check_group(hostname) == "clic"):
+  if (check_group(hostname) != "graphics"):
     disk = ""
   else:
     disk = check_disk(hostname)

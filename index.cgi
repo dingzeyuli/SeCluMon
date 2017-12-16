@@ -102,7 +102,7 @@ print """<table border='0'>
     <td><pre>Response time (s)</pre></td>
     <td><pre>Disk </pre></td>
     <td><pre>Temperature<br>current/maximum</pre></td>
-    <td><pre>Most Active Processes</pre></td>
+    <td><pre>Top 5 Active CLIC users</pre></td>
   </tr>
 """
 
@@ -167,12 +167,12 @@ for group in groups:
     for i in range(a):
       line = lines[7+i].rstrip()
       entries = line.split()
-      if float(entries[1]) < 110:
+      if float(entries[1]) < 90:
           break
-      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(int(entries[1])/100),bg_color, entries[2])
-      better_cpu = better_cpu + int(entries[1])/100.0
-    if (better_cpu > float(cpu_realtime)):
-        cpu_realtime = better_cpu
+      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(round(float(entries[1])/100.0)),bg_color, entries[2].encode('utf-8'))
+    #  better_cpu = better_cpu + int(entries[1])/100.0
+    #if (better_cpu > float(cpu_realtime)):
+    #    cpu_realtime = better_cpu
 
     cpu_color, cpu_ratio = value_to_color(cpu_realtime, 0,  nproc)
     ram_color, ram_ratio = value_to_color(used_ram, 0,  total_ram)
