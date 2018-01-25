@@ -169,7 +169,7 @@ for group in groups:
       entries = line.split()
       if float(entries[1]) < 90:
           break
-      cmds = cmds +  "%s %i-cores <span style='color:%s'>%s</span><br>" % (entries[0], int(round(float(entries[1])/100.0)),bg_color, entries[2].encode('utf-8'))
+      cmds = cmds +  "%s %i-core <span style='color:%s'>%s</span><br>" % (entries[0], int(round(float(entries[1])/100.0)),bg_color, entries[2].encode('utf-8'))
     #  better_cpu = better_cpu + int(entries[1])/100.0
     #if (better_cpu > float(cpu_realtime)):
     #    cpu_realtime = better_cpu

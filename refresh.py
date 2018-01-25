@@ -11,7 +11,7 @@ import multiprocessing as mp
 
 if __name__ == "__main__":
   hostnames=[]
-  hostnames = ["stokes", "noether", "ampere00", "ampere01", "ampere02", "compute01", "compute02", "compute03", "compute04", "compute05", "compute06", "compute07", "compute08", "navier00", "navier01", "navier02", "navier03", "green",]# "perelman"] 
+  hostnames = ["stokes", "noether","ampere00", "ampere01", "ampere02", "compute01", "compute02", "compute03", "compute04", "compute05", "compute06", "compute07", "compute08", "navier00", "navier01", "navier02", "navier03", "green",]# "perelman"] 
 
   hostnames.append("beijing")
   hostnames.append("paris")
@@ -39,7 +39,7 @@ if __name__ == "__main__":
   hostnames.append("nairobi")
   hostnames.append("lima")
   hostnames.append("copenhagen")
-  hostnames.append("helsinki")
+  #hostnames.append("helsinki")
   
   #hostnames.append("islamabad")
   # no home directory
@@ -53,7 +53,7 @@ if __name__ == "__main__":
   #for hostname in hostnames:
   #  print hostname
   #  scm.process_node( hostname)
-  pool = mp.Pool(10)
+  pool = mp.Pool(14)
   pool.map(scm.process_node, hostnames)
   t3 = time.time()
   print t3-t2
